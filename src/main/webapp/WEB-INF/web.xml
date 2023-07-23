@@ -63,6 +63,15 @@
 		<url-pattern>/test-info/*</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>movie-info</servlet-name>
+		<servlet-class>com.mvc.controller.MovieServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>movie-info</servlet-name>
+		<url-pattern>/movie-info/*</url-pattern>
+	</servlet-mapping>
+
 
 
 </web-app>
