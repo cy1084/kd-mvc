@@ -10,23 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mvc.common.DBCon;
+
 public class MovieInfoRepository {
 	public List<Map<String, String>> selectMovieInfoList() {
-		String driverName = "org.mariadb.jdbc.Driver";
-		String url = "jdbc:mariadb//localhost:3306/kd";
-		String user = "root";
-		String pwd = "kd1824java";
-
-		try {
-			Class.forName(driverName);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-
 		List<Map<String, String>> movieInfoList = new ArrayList<>();
 
 		try {
-			Connection con = DriverManager.getConnection(url, user, pwd);
+			Connection con = DBCon.getCon();
 			String sql = "SELECT * FROM MOVIE_INFO WHERE 1=1";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
@@ -34,8 +25,11 @@ public class MovieInfoRepository {
 			while (rs.next()) {
 				Map<String, String> movieInfo = new HashMap<>();
 				movieInfo.put("miNum", rs.getString("MI_NUM"));
-				movieInfo.put("miName", rs.getString("MI_NAME"));
+				movieInfo.put("miTitle", rs.getString("MI_TITLE"));
 				movieInfo.put("miDesc", rs.getString("MI_DESC"));
+				movieInfo.put("miGenre", rs.getString("MI_GENRE"));
+				movieInfo.put("miCredat", rs.getString("MI_CREDAT"));
+				movieInfo.put("miCnt", rs.getString("MI_CNT"));
 				movieInfoList.add(movieInfo);
 			}
 
@@ -47,20 +41,10 @@ public class MovieInfoRepository {
 	}
 	
 	public Map<String,String> selectMovieInfo(String miNum){
-		String driverName = "org.mariadb.jdbc.Driver";
-		String url = "jdbc:mariadb//localhost:3306/kd";
-		String user = "root";
-		String pwd = "kd1824java";
+	
 		
 		try {
-			Class.forName(driverName);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		Connection con;
-		try {
-			con = DriverManager.getConnection(url, user, pwd);
+			Connection con = DBCon.getCon();
 			String sql = "SELECT * FROM MOVIE_INFO WHERE MI_NUM=?";
 			PreparedStatement ps = con.prepareStatement(sql);
 			ps.setString(1, miNum);
@@ -69,17 +53,78 @@ public class MovieInfoRepository {
 			if(rs.next()) {
 				Map<String,String> movieInfo=new HashMap<>();
 				movieInfo.put("miNum",rs.getString("MI_NUM"));
-				movieInfo.put("miName",rs.getString("MI_NAME"));
+				movieInfo.put("miTitle",rs.getString("MI_TITLE"));
 				movieInfo.put("miDesc",rs.getString("MI_DESC"));
+				movieInfo.put("miGenre", rs.getString("MI_GENRE"));
+				movieInfo.put("miCredat", rs.getString("MI_CREDAT"));
+				movieInfo.put("miCnt", rs.getString("MI_CNT"));
 				return movieInfo;
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 		
+	}
+	
+	public int insertMovieInfo(Map<String,String> movieInfo) {
+		String sql="INSERT INTO MOVIE_INFO(MI_TITLE, MI_DESC, MI_GENRE, MI_CREDAT, MI_CNT)";
+		sql += " VALUES(?,?,?,?,?)";
+		Connection con=DBCon.getCon();
+		try {
+			PreparedStatement ps=con.prepareStatement(sql);
+			ps.setString(1, movieInfo.get("miTitle"));
+			ps.setString(2, movieInfo.get("miDesc"));
+			ps.setString(3, movieInfo.get("miGenre"));
+			ps.setString(4, movieInfo.get("miCredat"));
+			ps.setString(5, movieInfo.get("miCnt"));
+			return ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public int updateMovieInfo(Map<String,String> movieInfo) {
+		String sql="UPDATE MOVIE_INFO";
+		sql += " SET MI_TITLE=?,";
+		sql += " MI_DESC=?,";
+		sql += " MI_GENRE=?,";
+		sql += " MI_CREDAT=?,";
+		sql += " MI_CNT=?";
+		sql += " WHERE MI_NUM=?";
+		
+		Connection con=DBCon.getCon();
+		try {
+			PreparedStatement ps=con.prepareStatement(sql);
+			ps.setString(1, movieInfo.get("miTitle"));
+			ps.setString(2, movieInfo.get("miDesc"));
+			ps.setString(3, movieInfo.get("miGenre"));
+			ps.setString(4, movieInfo.get("miCredat"));
+			ps.setString(5, movieInfo.get("miCnt"));
+			ps.setString(6, movieInfo.get("miNum"));
+			return ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return 0;
+	}
+	
+	public int deleteMovieInfo(String miNum) {
+		String sql="DELETE FROM MOVIE_INFO WHERE MI_NUM=?";
+		Connection con=DBCon.getCon();
+		
+		try {
+			PreparedStatement ps=con.prepareStatement(sql);
+			ps.setString(1, miNum);
+			return ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

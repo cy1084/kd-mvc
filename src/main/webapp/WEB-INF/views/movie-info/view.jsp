@@ -1,22 +1,49 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<c:import url="/WEB-INF/views/common/head.jsp" />
+<meta charset="UTF-8">
+<title>Insert title here</title>
 </head>
 <body>
-	<div class="wrapper">
-		<c:import url="/WEB-INF/views/common/nav.jsp" />
-
-		<div class="main">
-			<c:import url="/WEB-INF/views/common/top.jsp" />
-			<main class="content">
-			</main>
-			<c:import url="/WEB-INF/views/common/footer.jsp" />
-		</div>
-	</div>
+	<form action="/movie-info/delete" method="POST">
+		<input type="hidden" name="miNum" value="${movieInfo.miNum }">
+		<table border="1">
+			<tr>
+				<th>번호</th>
+				<td>${movieInfo.miNum }</td>
+			</tr>
+			<tr>
+				<th>제목</th>
+				<td>${movieInfo.miTitle }</td>
+			</tr>
+			<tr>
+				<th>내용</th>
+				<td>${movieInfo.miDesc }</td>
+			</tr>
+			<tr>
+				<th>장르</th>
+				<td>${movieInfo.miGenre }</td>
+			</tr>
+			<tr>
+				<th>개봉일</th>
+				<td>${movieInfo.miCredat }</td>
+			</tr>
+			<tr>
+				<th>관객수</th>
+				<td>${movieInfo.miCnt }</td>
+			</tr>
+			<tr>
+				<th colspan="4">
+					<button
+						onclick="location.href='/movie-info/update?miNum=${movieInfo.miNum}'"
+						type="button">수정</button>
+					<button>삭제</button>
+				</th>
+			</tr>
+		</table>
+	</form>
 <body>
 </body>
 </html>

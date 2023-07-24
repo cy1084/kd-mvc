@@ -12,9 +12,7 @@
 </head>
 <body>
 	<h3>유저 리스트</h3>
-	<%
-
-	%>
+	
 	<table border="1">
 		<tr>
 			<th>번호</th>
@@ -31,6 +29,9 @@
 				<td>${userInfo.uiPwd}</td>
 			</tr>
 		</c:forEach>
+		<tr>
+		<td align="right" colspan="4"><button onclick="location.href='/user-info/insert'">등록</button>
+		</tr>
 	</table>
 </body>
 </html>
