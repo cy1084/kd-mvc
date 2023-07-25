@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mvc.common.CommonView;
 import com.mvc.repository.UserInfoRepository;
 
 public class UserInfoServlet extends HttpServlet {
@@ -19,33 +20,23 @@ public class UserInfoServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String uri = request.getRequestURI();
-		int idx = uri.lastIndexOf("/");
-		uri = uri.substring(idx + 1);
-		String path = "/WEB-INF/views/";
+		String uri = CommonView.getCmd(request);
 
 		if ("list".equals(uri)) {
-			path += "user-info/list.jsp";
 			request.setAttribute("userInfoList", uiRepo.selectUserInfoList());
 		} else if ("view".equals(uri)) {
-			path += "user-info/view.jsp";
 			String uiNum = request.getParameter("uiNum");
 			Map<String, String> userInfo = uiRepo.selectUserInfo(uiNum);
 			request.setAttribute("userInfo", userInfo);
 		} else if ("insert".equals(uri)) {
-			path += "user-info/insert.jsp"; // insert 화면까지 오기 위한!
+			// path += "user-info/insert.jsp"; // insert 화면까지 오기 위한!
 		} else if ("update".equals(uri)) {
-			path += "user-info/update.jsp";
-			String uiNum=request.getParameter("uiNum");
-			Map<String,String> userInfo=uiRepo.selectUserInfo(uiNum);
+
+			String uiNum = request.getParameter("uiNum");
+			Map<String, String> userInfo = uiRepo.selectUserInfo(uiNum);
 			request.setAttribute("userInfo", userInfo);
-		} else if ("delete".equals(uri)) {
-			path += "user-info/delete.jsp";
 		}
-
-		RequestDispatcher rd = request.getRequestDispatcher(path);
-		rd.forward(request, response);
-
+		CommonView.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -97,20 +88,20 @@ public class UserInfoServlet extends HttpServlet {
 			}
 
 		} else if ("delete".equals(uri)) {
-			String uiNum=request.getParameter("uiNum");
-			int result=uiRepo.deleteUserInfo(uiNum);
+			String uiNum = request.getParameter("uiNum");
+			int result = uiRepo.deleteUserInfo(uiNum);
 
+			request.setAttribute("url", "/user-info/view?uiNum=" + request.getParameter("uiNum"));
 
-			request.setAttribute("url", "/user-info/view?uiNum="+request.getParameter("uiNum"));
-		
-			if(result==1) {
+			if (result == 1) {
 				request.setAttribute("msg", "회원 삭제를 성공하였습니다.");
 				request.setAttribute("url", "/user-info/list");
 			}
 
 		}
-		RequestDispatcher rd = request.getRequestDispatcher(path);
-		rd.forward(request, response);
+		CommonView.goMessagePage(request, response);
+		//RequestDispatcher rd = request.getRequestDispatcher(path);
+		//rd.forward(request, response);
 	}
 
 }
